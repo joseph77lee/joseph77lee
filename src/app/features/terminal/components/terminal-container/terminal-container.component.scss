@@ -350,7 +350,7 @@
     max-width: none;
     
     .terminal-body {
-      padding: 16px;
+      padding: 12px;
       font-size: 14px;
     }
     
@@ -359,10 +359,39 @@
     }
     
     .terminal-header {
-      padding: 12px 16px;
+      padding: 8px 12px;
       
       .terminal-controls {
         display: none;
+      }
+      
+      .terminal-title {
+        font-size: 12px;
+      }
+    }
+  }
+  
+  // Status bar adjustments for mobile
+  .terminal-status-bar {
+    padding: 4px 12px;
+    font-size: 0.7em;
+    
+    .status-info {
+      font-size: 0.9em;
+      // Truncate long text on mobile
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 60vw;
+    }
+    
+    .status-shortcuts {
+      gap: 8px;
+      
+      kbd {
+        padding: 1px 3px;
+        font-size: 0.8em;
+        min-width: 14px;
       }
     }
   }

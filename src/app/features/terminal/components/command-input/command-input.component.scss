@@ -58,14 +58,20 @@
   font-family: inherit;
   font-size: inherit;
   width: 100%;
+  min-width: 0; // Allow shrinking
   padding: 0;
   margin: 0;
   line-height: inherit;
   caret-color: var(--terminal-accent, #58a6ff); // Native cursor color
+  overflow: hidden; // Prevent text overflow
+  text-overflow: ellipsis; // Show ellipsis for long text
   
   &::placeholder {
     color: rgba(255, 255, 255, 0.4);
     font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   &:disabled {
@@ -227,9 +233,23 @@
 // Mobile Responsive
 @include mobile {
   .command-line {
+    flex-wrap: nowrap; // Prevent wrapping
+    
     .command-input {
       font-size: 16px; // Prevent zoom on iOS
+      min-width: 0; // Allow shrinking
+      flex: 1; // Take remaining space
     }
+  }
+  
+  .prompt {
+    flex-shrink: 0; // Don't shrink prompt
+    font-size: 14px; // Slightly smaller on mobile
+  }
+  
+  .input-container {
+    min-width: 0; // Allow shrinking
+    flex: 1; // Take remaining space
   }
   
   .suggestions-container {

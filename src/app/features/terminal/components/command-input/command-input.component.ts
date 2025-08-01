@@ -40,6 +40,7 @@ export class CommandInputComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscribeToCommandHistory();
     this.focusInput();
+    this.setupWindowResizeListener();
   }
 
   ngOnDestroy(): void {
@@ -57,6 +58,28 @@ export class CommandInputComponent implements OnInit, OnDestroy {
         this.commandHistory = [...history];
         this.historyIndex = this.commandHistory.length;
       });
+  }
+
+  /**
+   * Setup window resize listener for responsive placeholder
+   */
+  private setupWindowResizeListener(): void {
+    if (typeof window !== 'undefined') {
+      const resizeHandler = () => {
+        // Trigger change detection for placeholder text
+        if (this.inputElement?.nativeElement) {
+          const currentPlaceholder = this.placeholderText;
+          this.inputElement.nativeElement.placeholder = currentPlaceholder;
+        }
+      };
+
+      window.addEventListener('resize', resizeHandler);
+      
+      // Cleanup on destroy
+      this.destroy$.subscribe(() => {
+        window.removeEventListener('resize', resizeHandler);
+      });
+    }
   }
 
   /**
@@ -322,6 +345,17 @@ export class CommandInputComponent implements OnInit, OnDestroy {
     if (this.disabled) {
       return 'Processing...';
     }
+    
+    // Check window width for responsive placeholder
+    if (typeof window !== 'undefined') {
+      const windowWidth = window.innerWidth;
+      if (windowWidth < 480) {
+        return 'Type command...';
+      } else if (windowWidth < 768) {
+        return 'Type a command';
+      }
+    }
+    
     return 'Type a command or "help" for assistance';
   }
 
