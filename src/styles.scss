@@ -1,0 +1,250 @@
+/* Global Styles for Joseph Lee Portfolio Terminal */
+@import './app/styles/base/variables';
+@import './app/styles/base/mixins';
+
+/* CSS Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Root Variables (will be overridden by theme service) */
+:root {
+  --terminal-bg: #{$default-terminal-bg};
+  --terminal-text: #{$default-terminal-text};
+  --terminal-accent: #{$default-terminal-accent};
+  --terminal-success: #{$default-terminal-success};
+  --terminal-error: #{$default-terminal-error};
+  --terminal-warning: #{$default-terminal-warning};
+  --terminal-prompt: #{$default-terminal-prompt};
+  --terminal-font-primary: #{$font-family-mono};
+}
+
+/* Base Styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--terminal-font-primary, #{$font-family-mono});
+  font-size: $terminal-font-size;
+  line-height: $terminal-line-height;
+  background: var(--terminal-bg);
+  color: var(--terminal-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  // Prevent text selection on non-content elements
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+  // Allow text selection in terminal content
+  .terminal-body,
+  .command-output,
+  .terminal-table {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+  }
+}
+
+/* Focus Styles */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  @include focus-ring();
+}
+
+/* Scrollbar Styles */
+* {
+  @include custom-scrollbar();
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+  line-height: inherit;
+}
+
+/* Code and Pre Elements */
+code {
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+pre {
+  font-family: inherit;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+}
+
+/* Links */
+a {
+  color: var(--terminal-accent);
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+  
+  &:focus-visible {
+    @include focus-ring();
+  }
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  
+  &:focus-visible {
+    @include focus-ring();
+  }
+}
+
+/* Form Elements */
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  
+  &:focus-visible {
+    @include focus-ring();
+  }
+}
+
+/* Terminal-specific global styles */
+.terminal-button {
+  @include terminal-button-base;
+}
+
+.terminal-button.success {
+  @include terminal-button-variant('success');
+}
+
+.terminal-button.error {
+  @include terminal-button-variant('error');
+}
+
+.terminal-button.warning {
+  @include terminal-button-variant('warning');
+}
+
+/* Theme Classes */
+.theme-dark {
+  // Default theme styles (applied via CSS custom properties)
+}
+
+.theme-light {
+  // Light theme overrides if needed
+}
+
+.theme-matrix {
+  // Matrix theme effects
+  .terminal-text,
+  .command-input,
+  .command-output {
+    text-shadow: 0 0 5px currentColor;
+  }
+}
+
+.theme-retro {
+  // Retro theme effects
+  .terminal-window {
+    border: 2px solid var(--terminal-accent);
+    box-shadow: 0 0 20px var(--terminal-accent);
+  }
+}
+
+/* Accessibility */
+.sr-only {
+  @include sr-only;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --terminal-bg: #000000;
+    --terminal-text: #ffffff;
+    --terminal-accent: #00ff00;
+    --terminal-success: #00ff00;
+    --terminal-error: #ff0000;
+    --terminal-warning: #ffff00;
+    --terminal-prompt: #00ffff;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    font-family: serif;
+  }
+  
+  .terminal-header,
+  .command-input-container,
+  .loading-indicator {
+    display: none !important;
+  }
+  
+  .terminal-window {
+    border: 1px solid black;
+    box-shadow: none;
+  }
+}
+
+/* Touch Styles */
+.touch-enabled {
+  -webkit-tap-highlight-color: rgba(88, 166, 255, 0.3);
+  touch-action: manipulation;
+}
+
+.touch-feedback {
+  background: rgba(88, 166, 255, 0.1) !important;
+  transition: background-color 0.15s ease;
+}
+
+/* Loading States */
+.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}

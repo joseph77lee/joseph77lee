@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, finalize, map, timeout } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, delay, finalize, map, timeout } from 'rxjs/operators';
 import { 
   CommandInput, 
   CommandOutput, 
@@ -58,17 +58,9 @@ export class CommandService {
     this.setExecutionState(CommandExecutionState.PROCESSING);
     this.currentCommandSubject.next(trimmedCommand);
 
-    const payload: CommandInput = {
-      command: trimmedCommand,
-      sessionId,
-      timestamp: new Date().toISOString()
-    };
-
-    return this.http.post<CommandOutput>(`${this.apiUrl}/commands/execute`, payload)
+    // For now, use offline mode with mock responses
+    return this.executeOfflineCommand(trimmedCommand)
       .pipe(
-        timeout(this.requestTimeout),
-        map(response => this.processCommandResponse(response)),
-        catchError(error => this.handleCommandError(error)),
         finalize(() => {
           this.setExecutionState(CommandExecutionState.IDLE);
           this.currentCommandSubject.next(null);
@@ -81,14 +73,8 @@ export class CommandService {
    * Get available commands with descriptions
    */
   getAvailableCommands(): Observable<CommandDefinition[]> {
-    return this.http.get<{data: CommandDefinition[]}>(`${this.apiUrl}/commands`)
-      .pipe(
-        map(response => response.data),
-        catchError(error => {
-          console.warn('Failed to fetch commands from API, using fallback', error);
-          return [this.getFallbackCommands()];
-        })
-      );
+    // Return fallback commands directly since we're not using an API
+    return of(this.getFallbackCommands());
   }
 
   /**
@@ -133,7 +119,7 @@ export class CommandService {
 
   private processCommandResponse(response: CommandOutput): CommandOutput {
     if (!response.success) {
-      throw new Error(response.error?.message || 'Command execution failed');
+      throw new Error('Command execution failed');
     }
     return response;
   }
@@ -207,6 +193,186 @@ export class CommandService {
         newHistory.shift();
       }
       this.commandHistorySubject.next(newHistory);
+    }
+  }
+
+  /**
+   * Execute command reading from JSON assets
+   */
+  private executeOfflineCommand(command: string): Observable<CommandOutput> {
+    const [cmd, ...args] = command.split(' ');
+    
+    return this.generateResponseFromAssets(cmd, args).pipe(
+      delay(200), // Small delay to simulate processing
+      map(output => ({
+        success: true,
+        data: {
+          output,
+          executionTime: Math.random() * 100 + 50,
+          nextSuggestions: this.getNextSuggestions(cmd)
+        },
+        metadata: {
+          commandId: `cmd_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          version: '1.0.0'
+        }
+      } as CommandOutput)),
+      catchError(error => {
+        return throwError(() => this.createCommandError('EXECUTION_ERROR', error.message || 'Command execution failed'));
+      })
+    );
+  }
+
+  /**
+   * Generate responses from JSON assets
+   */
+  private generateResponseFromAssets(command: string, args: string[]): Observable<any> {
+    switch (command) {
+      case 'help':
+        return of({
+          content: this.generateHelpContent(),
+          type: 'text',
+          formatting: { color: 'cyan' }
+        });
+
+      case 'summary':
+        return this.http.get('/assets/summary.json').pipe(
+          map((data: any) => ({
+            content: `${data.name} - Full Stack Developer
+
+${data.summary}
+
+Location: ${data.location}
+Website: ${data.website}
+
+Type 'skills', 'experience', 'education', or 'highlights' for more details.`,
+            type: 'text',
+            formatting: { color: 'green' }
+          }))
+        );
+
+      case 'skills':
+        const category = args[0];
+        return this.http.get('/assets/skills.json').pipe(
+          map((data: any) => {
+            if (category && data[category]) {
+              return {
+                content: data[category],
+                type: 'list',
+                formatting: { color: 'blue' }
+              };
+            }
+            
+            // Show all skills organized by category
+            const allSkills = Object.entries(data)
+              .map(([cat, skills]: [string, any]) => 
+                `${cat.toUpperCase()}:\n${skills.map((skill: string) => `• ${skill}`).join('\n')}`
+              )
+              .join('\n\n');
+            
+            return {
+              content: `Technical Skills:\n\n${allSkills}\n\nUse 'skills [category]' to view specific categories.`,
+              type: 'text',
+              formatting: { color: 'blue' }
+            };
+          })
+        );
+
+      case 'experience':
+        return this.http.get<any[]>('/assets/experience.json').pipe(
+          map((data) => {
+            const experienceText = data
+              .map(exp => 
+                `${exp.title} | ${exp.company}\n${exp.location} | ${exp.period}\n${exp.responsibilities.map((r: string) => `• ${r}`).join('\n')}`
+              )
+              .join('\n\n');
+            
+            return {
+              content: `Work Experience:\n\n${experienceText}`,
+              type: 'text',
+              formatting: { color: 'blue' }
+            };
+          })
+        );
+
+      case 'education':
+        return this.http.get<any[]>('/assets/education.json').pipe(
+          map((data) => {
+            const educationText = data
+              .map(edu => `${edu.degree}\n${edu.school}, ${edu.location} (${edu.year})`)
+              .join('\n\n');
+            
+            return {
+              content: `Education:\n\n${educationText}`,
+              type: 'text',
+              formatting: { color: 'purple' }
+            };
+          })
+        );
+
+      case 'highlights':
+        return this.http.get<string[]>('/assets/highlights.json').pipe(
+          map((data) => ({
+            content: data,
+            type: 'list',
+            formatting: { color: 'yellow' }
+          }))
+        );
+
+      default:
+        return of({
+          content: `Command '${command}' is recognized but not yet implemented.\n\nAvailable commands: help, summary, skills, experience, education, highlights`,
+          type: 'text',
+          formatting: { color: 'orange' }
+        });
+    }
+  }
+
+  /**
+   * Generate help content
+   */
+  private generateHelpContent(): string {
+    const commands = this.getFallbackCommands();
+    const categories = [...new Set(commands.map(cmd => cmd.category))];
+    
+    let helpText = `Joseph Lee's Interactive Portfolio Terminal\n\nAvailable Commands:\n\n`;
+    
+    categories.forEach(category => {
+      const categoryCommands = commands.filter(cmd => cmd.category === category);
+      const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
+      
+      helpText += `${categoryTitle}:\n`;
+      categoryCommands.forEach(cmd => {
+        helpText += `  ${cmd.usage.padEnd(20)} ${cmd.description}\n`;
+      });
+      helpText += '\n';
+    });
+    
+    helpText += `Type any command to explore my background and experience.\nUse 'clear' to clear the terminal or 'theme [name]' to change themes.`;
+    
+    return helpText;
+  }
+
+
+  /**
+   * Get next command suggestions based on the current command
+   */
+  private getNextSuggestions(command: string): string[] {
+    switch (command) {
+      case 'help':
+        return ['summary', 'skills', 'experience'];
+      case 'summary':
+        return ['skills', 'experience', 'highlights'];
+      case 'skills':
+        return ['experience', 'education', 'highlights'];
+      case 'experience':
+        return ['education', 'skills', 'highlights'];
+      case 'education':
+        return ['skills', 'experience', 'highlights'];
+      case 'highlights':
+        return ['summary', 'skills', 'experience'];
+      default:
+        return ['help', 'summary', 'skills'];
     }
   }
 

@@ -56,61 +56,32 @@ export class PortfolioService {
    * Get specific content section
    */
   getSection(section: string): Observable<ContentSection> {
-    // Try API first, fallback to local assets
-    return this.http.get<PortfolioApiResponse<ContentSection>>(`${this.apiUrl}/${section}`)
-      .pipe(
-        map(response => response.data),
-        catchError(error => {
-          console.warn(`API failed for section ${section}, trying local assets`, error);
-          return this.getLocalSection(section);
-        })
-      );
+    // Load directly from local assets
+    return this.getLocalSection(section);
   }
 
   /**
    * Get skills with filtering options
    */
   getSkills(category?: string): Observable<SkillsResponse> {
-    const url = category 
-      ? `${this.apiUrl}/skills?category=${category}`
-      : `${this.apiUrl}/skills`;
-
-    return this.http.get<PortfolioApiResponse<SkillsResponse>>(url)
-      .pipe(
-        map(response => response.data),
-        catchError(error => {
-          console.warn('API failed for skills, using local data', error);
-          return this.getLocalSkills(category);
-        })
-      );
+    // Load directly from local assets
+    return this.getLocalSkills(category);
   }
 
   /**
    * Get work experience
    */
   getExperience(): Observable<ExperienceResponse> {
-    return this.http.get<PortfolioApiResponse<ExperienceResponse>>(`${this.apiUrl}/experience`)
-      .pipe(
-        map(response => response.data),
-        catchError(error => {
-          console.warn('API failed for experience, using local data', error);
-          return this.getLocalExperience();
-        })
-      );
+    // Load directly from local assets
+    return this.getLocalExperience();
   }
 
   /**
    * Get highlights and achievements
    */
   getHighlights(): Observable<HighlightsResponse> {
-    return this.http.get<PortfolioApiResponse<HighlightsResponse>>(`${this.apiUrl}/highlights`)
-      .pipe(
-        map(response => response.data),
-        catchError(error => {
-          console.warn('API failed for highlights, using local data', error);
-          return this.getLocalHighlights();
-        })
-      );
+    // Load directly from local assets
+    return this.getLocalHighlights();
   }
 
   /**
@@ -125,7 +96,7 @@ export class PortfolioService {
     }).pipe(
       catchError(error => {
         console.warn('Resume download failed', error);
-        return throwError(() => new PortfolioError({
+        return throwError(() => ({
           code: 'DOWNLOAD_FAILED',
           message: 'Failed to download resume. Please try again later.',
           suggestion: 'Check your internet connection or try downloading from LinkedIn.'
@@ -162,14 +133,8 @@ export class PortfolioService {
   // Private methods
 
   private getPortfolioData(): Observable<Portfolio> {
-    return this.http.get<PortfolioApiResponse<Portfolio>>(this.apiUrl)
-      .pipe(
-        map(response => response.data),
-        catchError(error => {
-          console.warn('API failed, constructing portfolio from local assets', error);
-          return this.constructPortfolioFromAssets();
-        })
-      );
+    // Load directly from assets since we're not using an API
+    return this.constructPortfolioFromAssets();
   }
 
   private constructPortfolioFromAssets(): Observable<Portfolio> {
@@ -240,8 +205,8 @@ export class PortfolioService {
         return {
           positions,
           totalYears: this.calculateTotalExperience(positions),
-          companies: Array.from(companies),
-          technologies: Array.from(technologies)
+          companies: Array.from(companies) as string[],
+          technologies: Array.from(technologies) as string[]
         };
       })
     );
@@ -251,7 +216,7 @@ export class PortfolioService {
     return this.loadAssetFile('highlights.json').pipe(
       map(data => {
         const achievements = Array.isArray(data) ? data : data.highlights || [];
-        const categories = [...new Set(achievements.map((h: any) => h.category))];
+        const categories = [...new Set(achievements.map((h: any) => h.category))] as string[];
         const recentHighlights = achievements
           .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
           .slice(0, 5);

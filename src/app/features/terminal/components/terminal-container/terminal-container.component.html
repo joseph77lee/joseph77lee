@@ -54,15 +54,16 @@
         <!-- Command Output -->
         <div *ngIf="item.type === 'output'" class="command-output">
           <app-output-renderer 
-            [content]="item.content"
-            [isTyping]="item.isTyping && !isProcessing">
+            [content]="getOutputContent(item.content)"
+            [isTyping]="(item.isTyping || false) && !isProcessing">
           </app-output-renderer>
         </div>
         
         <!-- Error Messages -->
         <div *ngIf="item.type === 'error'" class="error-output">
           <span class="error-icon" aria-hidden="true">❌</span>
-          <span class="error-text">{{ item.content?.content }}</span>
+          <span class="error-text" *ngIf="isStringContent(item.content)">{{ item.content }}</span>
+          <span class="error-text" *ngIf="!isStringContent(item.content)">{{ getErrorMessage(item.content) }}</span>
           <div *ngIf="item.suggestion" class="error-suggestion">
             <span class="suggestion-icon" aria-hidden="true">💡</span>
             <span class="suggestion-text">{{ item.suggestion }}</span>
@@ -72,8 +73,8 @@
         <!-- System Messages -->
         <div *ngIf="item.type === 'system'" class="system-output">
           <app-output-renderer 
-            [content]="item.content"
-            [isTyping]="item.isTyping">
+            [content]="getOutputContent(item.content)"
+            [isTyping]="item.isTyping || false">
           </app-output-renderer>
         </div>
       </div>

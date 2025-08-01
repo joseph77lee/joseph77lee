@@ -1,0 +1,33 @@
+{
+  "frontend": [
+    "Angular",
+    "JavaScript",
+    "HTML5",
+    "CSS3",
+    "RxJS",
+    "TypeScript"
+  ],
+  "backend": [
+    "Java (Spring Boot, Spring MVC)",
+    "Node.js"
+  ],
+  "devTools": [
+    "Git",
+    "Azure DevOps",
+    "JHipster",
+    "Apache Tomcat"
+  ],
+  "dataAPIs": [
+    "REST APIs",
+    "SQL",
+    "ODBC",
+    "MySQL",
+    "PostgreSQL"
+  ],
+  "other": [
+    "Responsive Web Design",
+    "Unit Testing",
+    "OOP",
+    "SOLID Principles"
+  ]
+}

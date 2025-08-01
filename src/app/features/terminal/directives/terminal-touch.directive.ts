@@ -253,7 +253,7 @@ export class TerminalTouchDirective implements OnInit, OnDestroy {
     let parent = element.parentElement;
     while (parent && parent !== this.elementRef.nativeElement) {
       if (interactiveTags.includes(parent.tagName) || 
-          interactiveClasses.some(className => parent.classList.contains(className))) {
+          interactiveClasses.some(className => parent?.classList.contains(className))) {
         return true;
       }
       parent = parent.parentElement;

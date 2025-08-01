@@ -60,6 +60,7 @@
   padding: 0;
   margin: 0;
   line-height: inherit;
+  caret-color: var(--terminal-accent, #58a6ff); // Native cursor color
   
   &::placeholder {
     color: rgba(255, 255, 255, 0.4);
@@ -69,6 +70,7 @@
   &:disabled {
     cursor: not-allowed;
     color: rgba(201, 209, 217, 0.5);
+    caret-color: transparent;
   }
   
   // Remove browser autocomplete styling
@@ -80,18 +82,7 @@
   }
 }
 
-// Cursor
-.cursor {
-  width: 8px;
-  height: 1.2em;
-  background: var(--terminal-accent, #58a6ff);
-  margin-left: 2px;
-  display: inline-block;
-  
-  &.blink {
-    animation: cursor-blink 1s infinite;
-  }
-}
+// Removed custom cursor - using native input cursor
 
 // Suggestions Container
 .suggestions-container {
@@ -268,14 +259,6 @@
 }
 
 // Animations
-@keyframes cursor-blink {
-  0%, 50% { 
-    opacity: 1; 
-  }
-  51%, 100% { 
-    opacity: 0; 
-  }
-}
 
 @keyframes suggestions-appear {
   from {
@@ -326,10 +309,6 @@
 
 // Reduced motion
 @media (prefers-reduced-motion: reduce) {
-  .cursor.blink {
-    animation: none;
-  }
-  
   .suggestions-container {
     animation: none;
   }

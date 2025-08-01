@@ -423,4 +423,47 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
       this.addSystemMessage('^C', 'warning');
     }
   }
+
+  /**
+   * Get default content for output renderer
+   */
+  getDefaultContent() {
+    return {
+      content: '',
+      type: 'text' as const
+    };
+  }
+
+  /**
+   * Extract error message from content
+   */
+  getErrorMessage(content: any): string {
+    if (typeof content === 'string') {
+      return content;
+    }
+    
+    if (content && typeof content === 'object') {
+      return content.content || content.message || 'Unknown error';
+    }
+    
+    return 'Unknown error';
+  }
+
+  /**
+   * Check if content is string
+   */
+  isStringContent(content: any): boolean {
+    return typeof content === 'string';
+  }
+
+  /**
+   * Get output content ensuring it's OutputContent type
+   */
+  getOutputContent(content: any) {
+    if (content && typeof content === 'object' && content.content !== undefined) {
+      return content;
+    }
+    
+    return this.getDefaultContent();
+  }
 }

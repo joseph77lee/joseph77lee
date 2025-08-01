@@ -215,4 +215,35 @@ export class OutputRendererComponent implements OnInit {
     
     return `${typeLabel}${typingLabel}`;
   }
+
+  /**
+   * Get table headers
+   */
+  getTableHeaders(): string[] {
+    if (this.content.type !== 'table') {
+      return [];
+    }
+    
+    const tableData = this.formatTableData(this.content.content as any[]);
+    return tableData.headers;
+  }
+
+  /**
+   * Get table rows
+   */
+  getTableRows(): string[][] {
+    if (this.content.type !== 'table') {
+      return [];
+    }
+    
+    const tableData = this.formatTableData(this.content.content as any[]);
+    return tableData.rows;
+  }
+
+  /**
+   * Check if content is string
+   */
+  isStringContent(content: any): boolean {
+    return typeof content === 'string';
+  }
 }

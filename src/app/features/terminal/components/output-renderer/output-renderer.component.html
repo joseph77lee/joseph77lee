@@ -7,13 +7,13 @@
   <div *ngIf="content.type === 'text'" class="text-output">
     <app-typewriter-text 
       *ngIf="shouldUseTypewriter; else staticText"
-      [text]="content.content"
+      [text]="getContentAsString()"
       [speed]="typewriterSpeed"
       [enabled]="isTyping">
     </app-typewriter-text>
     
     <ng-template #staticText>
-      <span class="static-text" [innerHTML]="content.content"></span>
+      <span class="static-text" [innerHTML]="getContentAsString()"></span>
     </ng-template>
   </div>
 
@@ -34,9 +34,9 @@
   <div *ngIf="content.type === 'table'" class="table-output">
     <div class="table-container">
       <table class="terminal-table" role="table">
-        <thead *ngIf="formatTableData(content.content).headers.length > 0" role="rowgroup">
+        <thead *ngIf="getTableHeaders().length > 0" role="rowgroup">
           <tr role="row">
-            <th *ngFor="let header of formatTableData(content.content).headers" 
+            <th *ngFor="let header of getTableHeaders()" 
                 role="columnheader"
                 class="table-header">
               {{ header }}
@@ -44,7 +44,7 @@
           </tr>
         </thead>
         <tbody role="rowgroup">
-          <tr *ngFor="let row of formatTableData(content.content).rows; let i = index" 
+          <tr *ngFor="let row of getTableRows(); let i = index" 
               role="row"
               class="table-row"
               [style.animation-delay]="i * 100 + 'ms'">
@@ -67,7 +67,7 @@
   <!-- Interactive Output -->
   <div *ngIf="content.type === 'interactive'" class="interactive-output">
     <div class="interactive-content">
-      <div *ngIf="typeof content.content === 'string'; else objectContent">
+      <div *ngIf="isStringContent(content.content); else objectContent">
         {{ content.content }}
       </div>
       

@@ -70,7 +70,14 @@ export class SessionService {
     if (storedSession && this.isSessionValid(storedSession)) {
       this.restoreSession(storedSession);
     } else {
-      this.createNewSession();
+      this.createNewSession().subscribe({
+        next: (session) => {
+          console.log('Session initialized successfully:', session.id);
+        },
+        error: (error) => {
+          console.warn('Failed to initialize session:', error);
+        }
+      });
     }
   }
 
@@ -78,26 +85,9 @@ export class SessionService {
    * Create a new session
    */
   createNewSession(): Observable<Session> {
-    const initRequest: SessionInitRequest = {
-      userAgent: navigator.userAgent,
-      referrer: document.referrer,
-      screenResolution: `${screen.width}x${screen.height}`,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      language: navigator.language,
-      preferences: this.currentPreferences
-    };
-
-    return this.http.post<Session>(`${this.apiUrl}/init`, initRequest)
-      .pipe(
-        tap(session => {
-          this.setSession(session);
-          this.storeSession(session);
-        }),
-        catchError(error => {
-          console.warn('Failed to create session via API, using offline mode', error);
-          return of(this.createOfflineSession());
-        })
-      );
+    // For now, always use offline mode since we don't have a backend API
+    const offlineSession = this.createOfflineSession();
+    return of(offlineSession);
   }
 
   /**
@@ -279,7 +269,7 @@ export class SessionService {
   }
 
   private isSessionValid(session: Session): boolean {
-    return session && session.id && new Date() < new Date(session.expiresAt);
+    return !!(session && session.id && new Date() < new Date(session.expiresAt));
   }
 
   private generateSessionId(): string {
