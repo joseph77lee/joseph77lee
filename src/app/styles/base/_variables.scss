@@ -1,0 +1,72 @@
+// Base Variables for Terminal Portfolio
+// CSS Custom Properties are defined in session.service.ts and applied dynamically
+
+// Breakpoints
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+$large: 1200px;
+
+// Default theme colors (fallbacks)
+$default-terminal-bg: #0d1117;
+$default-terminal-text: #c9d1d9;
+$default-terminal-accent: #58a6ff;
+$default-terminal-success: #56d364;
+$default-terminal-error: #f85149;
+$default-terminal-warning: #d29922;
+$default-terminal-prompt: #79c0ff;
+
+// Typography
+$font-family-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+$font-family-fallback: 'Courier New', monospace;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 20px;
+$spacing-2xl: 24px;
+
+// Border radius
+$border-radius-sm: 4px;
+$border-radius-md: 6px;
+$border-radius-lg: 8px;
+
+// Shadows
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+$shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+$shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+// Z-index layers
+$z-index-dropdown: 1000;
+$z-index-sticky: 1010;
+$z-index-fixed: 1020;
+$z-index-modal-backdrop: 1030;
+$z-index-modal: 1040;
+$z-index-popover: 1050;
+$z-index-tooltip: 1060;
+
+// Animation timing
+$transition-fast: 0.15s;
+$transition-base: 0.2s;
+$transition-slow: 0.3s;
+
+// Animation easing
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+$ease-in: cubic-bezier(0.4, 0, 1, 1);
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+// Terminal specific
+$terminal-line-height: 1.4;
+$terminal-font-size: 14px;
+$terminal-font-size-mobile: 14px; // Keep same for better readability
+
+// Loading animation
+$loading-dot-size: 4px;
+$loading-animation-duration: 1.4s;
+
+// Accessibility
+$focus-ring-width: 2px;
+$focus-ring-offset: 2px;
+$minimum-touch-target: 44px;

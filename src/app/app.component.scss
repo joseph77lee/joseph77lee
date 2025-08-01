@@ -1,0 +1,112 @@
+// App Component Styles
+@import './styles/base/variables';
+@import './styles/base/mixins';
+
+.portfolio-app {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-container {
+  width: 100%;
+  height: 100%;
+  background: var(--terminal-bg, #{$default-terminal-bg});
+  color: var(--terminal-text, #{$default-terminal-text});
+  font-family: var(--terminal-font-primary, #{$font-family-mono});
+  
+  // Ensure text is selectable
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  
+  // Theme transitions
+  transition: background-color $transition-base ease,
+              color $transition-base ease;
+  
+  // Theme-specific styles
+  &.theme-dark {
+    // Dark theme is the default, styles applied via CSS custom properties
+  }
+  
+  &.theme-light {
+    // Additional light theme specific styles if needed
+  }
+  
+  &.theme-matrix {
+    // Matrix theme specific styles
+    text-shadow: 0 0 5px currentColor;
+    
+    &::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(0, 255, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(0, 255, 0, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+  }
+  
+  &.theme-retro {
+    // Retro theme specific styles
+    &::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 176, 0, 0.03) 2px,
+        rgba(255, 176, 0, 0.03) 4px
+      );
+      pointer-events: none;
+      z-index: -1;
+    }
+  }
+}
+
+// Global scrollbar styles
+* {
+  @include custom-scrollbar();
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .app-container {
+    transition: none;
+    
+    &::before {
+      animation: none !important;
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .app-container {
+    border: 2px solid var(--terminal-text, #{$default-terminal-text});
+  }
+}
+
+// Print styles
+@media print {
+  .app-container {
+    background: white !important;
+    color: black !important;
+    font-family: serif;
+    
+    &::before {
+      display: none;
+    }
+  }
+}

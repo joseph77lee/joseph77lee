@@ -1,0 +1,63 @@
+// Typewriter Text Component Styles
+.typewriter-component {
+  display: inline;
+  
+  &.typing {
+    .typewriter-text {
+      // Smooth text appearance during typing
+      transition: none;
+    }
+  }
+  
+  &.complete {
+    .typewriter-text {
+      // Subtle fade-in when complete
+      animation: text-complete 0.2s ease-in;
+    }
+  }
+}
+
+.typewriter-text {
+  font-family: inherit;
+  color: inherit;
+  white-space: pre-wrap; // Preserve whitespace and line breaks
+  word-wrap: break-word;
+}
+
+.typing-cursor {
+  color: var(--terminal-accent, #58a6ff);
+  font-weight: bold;
+  animation: cursor-blink 1s infinite;
+  margin-left: 1px;
+}
+
+// Animations
+@keyframes cursor-blink {
+  0%, 50% { 
+    opacity: 1; 
+  }
+  51%, 100% { 
+    opacity: 0; 
+  }
+}
+
+@keyframes text-complete {
+  from {
+    opacity: 0.8;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .typing-cursor {
+    animation: none;
+    opacity: 1;
+  }
+  
+  .typewriter-text {
+    animation: none;
+  }
+}

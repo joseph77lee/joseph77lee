@@ -1,0 +1,68 @@
+[
+  {
+    "company": "Government of Canada (G7 Summit, SMO)",
+    "location": "Calgary, AB",
+    "title": "Accreditation IT Support Specialist",
+    "period": "April 2025 \u2013 Present",
+    "responsibilities": [
+      "Provide IT support for badge printing software and hardware.",
+      "Manage and troubleshoot ODBC data connections.",
+      "Collaborate with teams to optimize workflows."
+    ]
+  },
+  {
+    "company": "Camp Reservations Canada (Campspot)",
+    "location": "Remote",
+    "title": "Full Stack Developer",
+    "period": "Nov 2023 \u2013 April 2025",
+    "responsibilities": [
+      "Developed and maintained campground utility billing system.",
+      "Redesigned campsite management features.",
+      "Built responsive interfaces and optimized backend services."
+    ]
+  },
+  {
+    "company": "Master\u2019s Academy & College",
+    "location": "Remote (Contract)",
+    "title": "Full Stack Developer",
+    "period": "Sep 2023 \u2013 Apr 2024",
+    "responsibilities": [
+      "Built student notes module for the SMS.",
+      "Improved reliability using Java and Spring MVC.",
+      "Maintained Apache Tomcat services."
+    ]
+  },
+  {
+    "company": "Paysafe Group",
+    "location": "Calgary, AB",
+    "title": "Full Stack Developer",
+    "period": "2013 \u2013 2022",
+    "responsibilities": [
+      "Developed front-end for risk control systems.",
+      "Built full-stack apps with Angular and Spring Boot.",
+      "Resolved performance bottlenecks."
+    ]
+  },
+  {
+    "company": "Userful Corporation",
+    "location": "Calgary, AB",
+    "title": "Software Developer",
+    "period": "2012 \u2013 2013",
+    "responsibilities": [
+      "Resolved critical bugs and improved features.",
+      "Built cross-platform solutions with Tcl, Java, Python, GWT, PHP.",
+      "Integrated PostgreSQL and OpenACS APIs."
+    ]
+  },
+  {
+    "company": "OKCashbag System (via SK C&C)",
+    "location": "Seoul, South Korea",
+    "title": "System Application Developer",
+    "period": "2003 \u2013 2006",
+    "responsibilities": [
+      "Developed daemon processes with C and sockets.",
+      "Maintained backend server processes on Unix.",
+      "Built internal service interfaces using Visual Basic."
+    ]
+  }
+]

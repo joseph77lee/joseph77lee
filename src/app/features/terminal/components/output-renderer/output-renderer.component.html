@@ -1,0 +1,128 @@
+<!-- Output Renderer Template -->
+<div class="output-content" 
+     [attr.aria-label]="ariaLabel"
+     role="region">
+
+  <!-- Text Output with Typewriter Effect -->
+  <div *ngIf="content.type === 'text'" class="text-output">
+    <app-typewriter-text 
+      *ngIf="shouldUseTypewriter; else staticText"
+      [text]="content.content"
+      [speed]="typewriterSpeed"
+      [enabled]="isTyping">
+    </app-typewriter-text>
+    
+    <ng-template #staticText>
+      <span class="static-text" [innerHTML]="content.content"></span>
+    </ng-template>
+  </div>
+
+  <!-- List Output -->
+  <div *ngIf="content.type === 'list'" class="list-output">
+    <ul class="terminal-list" role="list">
+      <li *ngFor="let item of formatListData(content.content); let i = index" 
+          class="list-item"
+          [style.animation-delay]="i * 50 + 'ms'"
+          role="listitem">
+        <span class="list-bullet" aria-hidden="true">•</span>
+        <span class="list-text">{{ item }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Table Output -->
+  <div *ngIf="content.type === 'table'" class="table-output">
+    <div class="table-container">
+      <table class="terminal-table" role="table">
+        <thead *ngIf="formatTableData(content.content).headers.length > 0" role="rowgroup">
+          <tr role="row">
+            <th *ngFor="let header of formatTableData(content.content).headers" 
+                role="columnheader"
+                class="table-header">
+              {{ header }}
+            </th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          <tr *ngFor="let row of formatTableData(content.content).rows; let i = index" 
+              role="row"
+              class="table-row"
+              [style.animation-delay]="i * 100 + 'ms'">
+            <td *ngFor="let cell of row" 
+                role="gridcell"
+                class="table-cell">
+              {{ cell }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- JSON Output -->
+  <div *ngIf="content.type === 'json'" class="json-output">
+    <pre class="json-container" role="textbox" readonly>{{ formatJsonData(content.content) }}</pre>
+  </div>
+
+  <!-- Interactive Output -->
+  <div *ngIf="content.type === 'interactive'" class="interactive-output">
+    <div class="interactive-content">
+      <div *ngIf="typeof content.content === 'string'; else objectContent">
+        {{ content.content }}
+      </div>
+      
+      <ng-template #objectContent>
+        <app-output-renderer 
+          [content]="{content: content.content, type: 'text'}"
+          [isTyping]="false">
+        </app-output-renderer>
+      </ng-template>
+    </div>
+    
+    <!-- Interactive Actions -->
+    <div *ngIf="hasActions" class="interactive-actions" role="group">
+      <button *ngFor="let action of content.actions"
+              class="terminal-button"
+              [class]="'button-' + action.type"
+              (click)="handleAction(action)"
+              [attr.aria-label]="action.label">
+        <span class="button-text">{{ action.label }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div *ngIf="hasPagination" class="pagination-controls" role="navigation" aria-label="Pagination">
+    <div class="pagination-info">
+      <span class="pagination-text">
+        Page {{ content.pagination!.current }} of {{ content.pagination!.total }}
+      </span>
+    </div>
+    
+    <div class="pagination-actions">
+      <button *ngIf="content.pagination!.hasPrevious" 
+              class="pagination-button"
+              (click)="loadPreviousPage()"
+              aria-label="Previous page">
+        ← Previous
+      </button>
+      
+      <button *ngIf="content.pagination!.hasNext" 
+              class="pagination-button primary"
+              (click)="loadNextPage()"
+              aria-label="Next page">
+        Continue →
+      </button>
+    </div>
+    
+    <!-- Keyboard hint -->
+    <div class="pagination-hint">
+      <span class="hint-text">Press ENTER to continue or type another command</span>
+    </div>
+  </div>
+</div>
+
+<!-- Loading state for typewriter -->
+<div *ngIf="isTyping && shouldUseTypewriter" class="typing-indicator" aria-live="polite">
+  <span class="sr-only">Content is being displayed</span>
+</div>

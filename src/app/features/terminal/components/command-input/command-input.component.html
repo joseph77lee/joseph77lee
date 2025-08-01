@@ -1,0 +1,107 @@
+<!-- Command Input Component Template -->
+<div class="command-line" 
+     [class.focused]="isFocused"
+     [class.disabled]="disabled">
+  
+  <!-- Command Prompt -->
+  <span class="prompt" 
+        [attr.aria-label]="'Command prompt'">
+    {{ prompt }}
+  </span>
+  
+  <!-- Command Input -->
+  <div class="input-container">
+    <input 
+      #inputElement
+      type="text"
+      class="command-input"
+      [(ngModel)]="currentCommand"
+      [disabled]="disabled"
+      [placeholder]="placeholderText"
+      [attr.aria-label]="'Command input'"
+      [attr.aria-describedby]="'command-help'"
+      [attr.aria-expanded]="showSuggestions"
+      [attr.aria-autocomplete]="'list'"
+      [attr.aria-controls]="showSuggestions ? 'suggestions-list' : null"
+      (input)="onInput($event)"
+      (keydown)="onKeydown($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      autocomplete="off"
+      spellcheck="false">
+    
+    <!-- Cursor -->
+    <span class="cursor" 
+          [class.blink]="isFocused && !disabled"
+          aria-hidden="true">
+    </span>
+  </div>
+</div>
+
+<!-- Command Suggestions -->
+<div *ngIf="showSuggestions" 
+     class="suggestions-container"
+     id="suggestions-list"
+     role="listbox"
+     [attr.aria-label]="'Command suggestions'">
+  
+  <div class="suggestions-header">
+    <span class="suggestions-title">Available commands:</span>
+    <span class="suggestions-hint">Press Tab to select, ↑/↓ to navigate</span>
+  </div>
+  
+  <div class="suggestions-list">
+    <div *ngFor="let suggestion of suggestions; let i = index"
+         class="suggestion-item"
+         [class.selected]="isSuggestionSelected(i)"
+         [attr.aria-selected]="isSuggestionSelected(i)"
+         [attr.id]="'suggestion-' + i"
+         role="option"
+         (click)="onSuggestionClick(suggestion, $event)"
+         (mouseenter)="onSuggestionHover(i)">
+      
+      <span class="suggestion-text">{{ suggestion }}</span>
+      
+      <!-- Selection indicator -->
+      <span *ngIf="isSuggestionSelected(i)" 
+            class="selection-indicator" 
+            aria-hidden="true">
+        ←
+      </span>
+    </div>
+  </div>
+  
+  <div class="suggestions-footer" *ngIf="suggestions.length > 3">
+    <span class="suggestions-count">
+      {{ suggestions.length }} command{{ suggestions.length !== 1 ? 's' : '' }} available
+    </span>
+  </div>
+</div>
+
+<!-- Hidden help text for screen readers -->
+<div id="command-help" class="sr-only">
+  <p>
+    Enter portfolio commands to explore Joseph Lee's background. 
+    Use up and down arrows to navigate command history. 
+    Press Tab for auto-completion. 
+    Type "help" to see all available commands.
+  </p>
+</div>
+
+<!-- Keyboard shortcuts help -->
+<div class="keyboard-shortcuts" *ngIf="isFocused && !showSuggestions && !currentCommand">
+  <div class="shortcuts-container">
+    <div class="shortcut">
+      <kbd>↑</kbd><kbd>↓</kbd>
+      <span>History</span>
+    </div>
+    <div class="shortcut">
+      <kbd>Tab</kbd>
+      <span>Complete</span>
+    </div>
+    <div class="shortcut">
+      <kbd>Ctrl</kbd><kbd>L</kbd>
+      <span>Clear</span>
+    </div>
+  </div>
+</div>

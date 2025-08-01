@@ -1,0 +1,125 @@
+<!-- Terminal Container Template -->
+<div class="terminal-window" 
+     (click)="onTerminalClick($event)"
+     (keydown)="onKeydown($event)"
+     tabindex="0">
+  
+  <!-- Screen Reader Announcements -->
+  <div class="sr-only" 
+       aria-live="polite" 
+       aria-atomic="true">
+    {{ screenReaderAnnouncement }}
+  </div>
+
+  <!-- Terminal Header -->
+  <div class="terminal-header">
+    <div class="terminal-controls">
+      <span class="control close" aria-hidden="true"></span>
+      <span class="control minimize" aria-hidden="true"></span>
+      <span class="control maximize" aria-hidden="true"></span>
+    </div>
+    
+    <div class="terminal-title">
+      {{ currentPrompt.replace('$ ', '') }}
+    </div>
+    
+    <div class="terminal-status">
+      <span class="status-indicator" 
+            [class.processing]="isProcessing"
+            [attr.aria-label]="isProcessing ? 'Processing command' : 'Ready'">
+      </span>
+    </div>
+  </div>
+
+  <!-- Terminal Body -->
+  <div class="terminal-body" 
+       #terminalBody
+       role="log"
+       aria-label="Terminal output"
+       aria-live="polite">
+    
+    <!-- Command History -->
+    <div class="command-history">
+      <div *ngFor="let item of commandHistory; trackBy: trackByCommandId" 
+           class="history-item"
+           [ngClass]="'item-' + item.type"
+           [attr.data-command-id]="item.id">
+        
+        <!-- Command Echo -->
+        <div *ngIf="item.type === 'command'" class="command-echo">
+          <span class="prompt" [attr.aria-label]="'Command prompt'">{{ item.prompt }}</span>
+          <span class="command-text">{{ item.command }}</span>
+        </div>
+        
+        <!-- Command Output -->
+        <div *ngIf="item.type === 'output'" class="command-output">
+          <app-output-renderer 
+            [content]="item.content"
+            [isTyping]="item.isTyping && !isProcessing">
+          </app-output-renderer>
+        </div>
+        
+        <!-- Error Messages -->
+        <div *ngIf="item.type === 'error'" class="error-output">
+          <span class="error-icon" aria-hidden="true">❌</span>
+          <span class="error-text">{{ item.content?.content }}</span>
+          <div *ngIf="item.suggestion" class="error-suggestion">
+            <span class="suggestion-icon" aria-hidden="true">💡</span>
+            <span class="suggestion-text">{{ item.suggestion }}</span>
+          </div>
+        </div>
+        
+        <!-- System Messages -->
+        <div *ngIf="item.type === 'system'" class="system-output">
+          <app-output-renderer 
+            [content]="item.content"
+            [isTyping]="item.isTyping">
+          </app-output-renderer>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="isProcessing" class="loading-indicator">
+      <app-loading-indicator 
+        [isLoading]="isProcessing"
+        loadingMessage="Processing command...">
+      </app-loading-indicator>
+    </div>
+
+    <!-- Command Input -->
+    <div class="command-input-container" 
+         [class.disabled]="isProcessing">
+      <app-command-input 
+        #commandInput
+        [prompt]="currentPrompt"
+        [disabled]="isProcessing"
+        (commandSubmitted)="executeCommand($event)">
+      </app-command-input>
+    </div>
+  </div>
+
+  <!-- Terminal Footer (Mobile) -->
+  <div class="terminal-footer" *ngIf="isMobile">
+    <div class="mobile-hints">
+      <span class="hint">Type "help" to start</span>
+      <span class="hint">Tap screen to focus</span>
+    </div>
+  </div>
+</div>
+
+<!-- Accessibility Instructions -->
+<div class="sr-only">
+  <h2>Interactive Portfolio Terminal</h2>
+  <p>
+    This is an interactive terminal interface for exploring Joseph Lee's portfolio.
+    Type commands to navigate through different sections of the portfolio.
+    Use the help command to see available options.
+  </p>
+  <p>
+    Keyboard shortcuts: 
+    Ctrl+L to clear terminal, 
+    Up/Down arrows for command history,
+    Tab for auto-completion.
+  </p>
+</div>
