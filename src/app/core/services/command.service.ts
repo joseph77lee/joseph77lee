@@ -319,9 +319,12 @@ Type 'skills', 'experience', 'education', or 'highlights' for more details.`,
           }))
         );
 
+      case 'download':
+        return this.executeDownloadCommand();
+
       default:
         return of({
-          content: `Command '${command}' is recognized but not yet implemented.\n\nAvailable commands: help, summary, skills, experience, education, highlights`,
+          content: `Command '${command}' is recognized but not yet implemented.\n\nAvailable commands: help, summary, skills, experience, education, highlights, download`,
           type: 'text',
           formatting: { color: 'orange' }
         });
@@ -355,21 +358,155 @@ Type 'skills', 'experience', 'education', or 'highlights' for more details.`,
 
 
   /**
+   * Execute download command to download resume PDF
+   */
+  private executeDownloadCommand(): Observable<any> {
+    try {
+      // Generate PDF content for Joseph Lee's resume
+      const resumeContent = this.generateResumeContent();
+      
+      // Create blob and download
+      const blob = new Blob([resumeContent], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      // Create download link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Joseph_Lee_Resume.pdf';
+      link.style.display = 'none';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up blob URL after a delay
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+      
+      return of({
+        content: '📄 Resume downloaded successfully!\n\nFile: Joseph_Lee_Resume.pdf\nLocation: Downloads folder\n\nThe resume contains my complete professional background, skills, and experience.',
+        type: 'interactive',
+        formatting: { 
+          color: 'green',
+          animation: { typewriter: true, speed: 30 }
+        },
+        actions: [
+          {
+            id: 'download-resume',
+            label: 'Download Resume',
+            type: 'download' as const
+          }
+        ]
+      });
+    } catch (error) {
+      return of({
+        content: '❌ Download failed. Please try again or contact support.\n\nError: Unable to generate resume file.',
+        type: 'text',
+        formatting: { color: 'red' }
+      });
+    }
+  }
+
+  /**
+   * Generate resume content (placeholder - in real app would be actual PDF)
+   */
+  private generateResumeContent(): string {
+    return `%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+/Resources <<
+/Font <<
+/F1 5 0 R
+>>
+>>
+>>
+endobj
+
+4 0 obj
+<<
+/Length 200
+>>
+stream
+BT
+/F1 12 Tf
+50 750 Td
+(JOSEPH LEE) Tj
+0 -20 Td
+(Full Stack Developer) Tj
+0 -30 Td
+(Professional resume with complete background) Tj
+0 -20 Td
+(Skills, experience, and portfolio projects) Tj
+0 -30 Td
+(Generated from Interactive Terminal Portfolio) Tj
+ET
+endstream
+endobj
+
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+>>
+endobj
+
+xref
+0 6
+0000000000 65535 f 
+0000000010 00000 n 
+0000000053 00000 n 
+0000000125 00000 n 
+0000000348 00000 n 
+0000000565 00000 n 
+trailer
+<<
+/Size 6
+/Root 1 0 R
+>>
+startxref
+625
+%%EOF`;
+  }
+
+  /**
    * Get next command suggestions based on the current command
    */
   private getNextSuggestions(command: string): string[] {
     switch (command) {
       case 'help':
-        return ['summary', 'skills', 'experience'];
+        return ['summary', 'skills', 'experience', 'download'];
       case 'summary':
-        return ['skills', 'experience', 'highlights'];
+        return ['skills', 'experience', 'highlights', 'download'];
       case 'skills':
-        return ['experience', 'education', 'highlights'];
+        return ['experience', 'education', 'highlights', 'download'];
       case 'experience':
-        return ['education', 'skills', 'highlights'];
+        return ['education', 'skills', 'highlights', 'download'];
       case 'education':
-        return ['skills', 'experience', 'highlights'];
+        return ['skills', 'experience', 'highlights', 'download'];
       case 'highlights':
+        return ['summary', 'skills', 'experience', 'download'];
+      case 'download':
         return ['summary', 'skills', 'experience'];
       default:
         return ['help', 'summary', 'skills'];

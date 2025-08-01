@@ -381,4 +381,132 @@ describe('CommandService', () => {
       });
     });
   });
+
+  describe('Download Command', () => {
+    let originalURL: any;
+    
+    beforeEach(() => {
+      // Store original URL object
+      originalURL = (window as any).URL;
+      
+      // Mock the global URL.createObjectURL and URL.revokeObjectURL
+      (window as any).URL = {
+        createObjectURL: jasmine.createSpy('createObjectURL').and.returnValue('blob:mock-url'),
+        revokeObjectURL: jasmine.createSpy('revokeObjectURL')
+      };
+
+      // Mock document.createElement for creating download link
+      spyOn(document, 'createElement').and.callFake((tagName: string) => {
+        if (tagName === 'a') {
+          const mockLink = {
+            href: '',
+            download: '',
+            style: { display: '' },
+            click: jasmine.createSpy('click')
+          };
+          return mockLink as any;
+        }
+        return document.createElement(tagName);
+      });
+
+      spyOn(document.body, 'appendChild').and.stub();
+      spyOn(document.body, 'removeChild').and.stub();
+    });
+
+    afterEach(() => {
+      // Restore original URL object
+      (window as any).URL = originalURL;
+    });
+
+    it('should be included in available commands', () => {
+      expect(service.availableCommands).toContain('download');
+    });
+
+    it('should validate download command', () => {
+      expect(service.isValidCommand('download')).toBeTrue();
+    });
+
+    it('should execute download command successfully', (done) => {
+      service.executeCommand('download', mockSessionId).subscribe({
+        next: (response) => {
+          expect(response.success).toBeTrue();
+          expect(response.data.output.type).toBe('interactive');
+          expect(response.data.output.content).toContain('Resume downloaded successfully');
+          expect(response.data.output.actions).toBeDefined();
+          expect(response.data.output.actions![0].type).toBe('download');
+          done();
+        }
+      });
+
+      // No HTTP request should be made for offline mode
+      httpMock.expectNone(`${mockApiUrl}/commands/execute`);
+    });
+
+    it('should trigger browser download when executed', (done) => {
+      service.executeCommand('download', mockSessionId).subscribe({
+        next: (response) => {
+          // Verify that URL.createObjectURL was called
+          expect((window as any).URL.createObjectURL).toHaveBeenCalled();
+          
+          // Verify that a link element was created
+          expect(document.createElement).toHaveBeenCalledWith('a');
+          
+          // Verify that the download was triggered
+          const mockLink = (document.createElement as jasmine.Spy).calls.mostRecent().returnValue;
+          expect(mockLink.click).toHaveBeenCalled();
+          
+          done();
+        }
+      });
+
+      httpMock.expectNone(`${mockApiUrl}/commands/execute`);
+    });
+
+    it('should include download in next suggestions for relevant commands', () => {
+      const helpSuggestions = (service as any).getNextSuggestions('help');
+      const summarySuggestions = (service as any).getNextSuggestions('summary');
+      
+      expect(helpSuggestions).toContain('download');
+      expect(summarySuggestions).toContain('download');
+    });
+
+    it('should handle download command with proper formatting', (done) => {
+      service.executeCommand('download', mockSessionId).subscribe({
+        next: (response) => {
+          expect(response.data.output.formatting?.color).toBe('green');
+          expect(response.data.output.formatting?.animation?.typewriter).toBeTrue();
+          done();
+        }
+      });
+
+      httpMock.expectNone(`${mockApiUrl}/commands/execute`);
+    });
+
+    it('should provide proper metadata for download command', (done) => {
+      service.executeCommand('download', mockSessionId).subscribe({
+        next: (response) => {
+          expect(response.metadata.commandId).toMatch(/^cmd_\d+$/);
+          expect(response.metadata.version).toBe('1.0.0');
+          expect(new Date(response.metadata.timestamp)).toBeInstanceOf(Date);
+          done();
+        }
+      });
+
+      httpMock.expectNone(`${mockApiUrl}/commands/execute`);
+    });
+
+    it('should clean up blob URL after download', (done) => {
+      service.executeCommand('download', mockSessionId).subscribe({
+        next: () => {
+          // Wait for cleanup timeout
+          setTimeout(() => {
+            expect((window as any).URL.revokeObjectURL).toHaveBeenCalledWith('blob:mock-url');
+            done();
+          }, 1100); // Slightly longer than the 1000ms cleanup timeout
+        }
+      });
+
+      httpMock.expectNone(`${mockApiUrl}/commands/execute`);
+    });
+  });
 });
