@@ -95,8 +95,44 @@
         #commandInput
         [prompt]="currentPrompt"
         [disabled]="isProcessing"
-        (commandSubmitted)="executeCommand($event)">
+        [hideInlineTooltips]="true"
+        (commandSubmitted)="executeCommand($event)"
+        (inputFocused)="onInputFocused($event)"
+        (inputBlurred)="onInputBlurred()"
+        (suggestionsChanged)="onSuggestionsChanged($event)">
       </app-command-input>
+    </div>
+  </div>
+
+  <!-- Terminal Status Bar -->
+  <div class="terminal-status-bar">
+    <div class="status-left">
+      <span class="status-info" *ngIf="currentSuggestions.length > 0">
+        Available commands: {{ currentSuggestions.join(', ') }}
+      </span>
+      <span class="status-info" *ngIf="currentSuggestions.length === 0 && isInputFocused">
+        Type 'help' to see all commands
+      </span>
+      <span class="status-info" *ngIf="!isInputFocused">
+        Joseph Lee's Interactive Portfolio Terminal
+      </span>
+    </div>
+    
+    <div class="status-right">
+      <span class="status-shortcuts" *ngIf="isInputFocused">
+        <span class="shortcut-item">
+          <kbd>↑</kbd><kbd>↓</kbd> History
+        </span>
+        <span class="shortcut-item">
+          <kbd>Tab</kbd> Complete
+        </span>
+        <span class="shortcut-item">
+          <kbd>Ctrl+L</kbd> Clear
+        </span>
+      </span>
+      <span class="status-theme" *ngIf="!isInputFocused">
+        {{ currentThemeName | titlecase }} Theme
+      </span>
     </div>
   </div>
 

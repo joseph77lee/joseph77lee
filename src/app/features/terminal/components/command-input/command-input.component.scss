@@ -5,6 +5,7 @@
 .command-input-component {
   position: relative;
   width: 100%;
+  z-index: 20;
 }
 
 // Command Line
@@ -84,68 +85,66 @@
 
 // Removed custom cursor - using native input cursor
 
-// Suggestions Container
+// Suggestions Container - Status bar style
 .suggestions-container {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: var(--terminal-bg, #0d1117);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  margin-top: 8px;
+  position: relative;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 4px;
+  margin-bottom: 4px;
   overflow: hidden;
   animation: suggestions-appear 0.2s ease-out;
+  z-index: 100;
 }
 
 .suggestions-header {
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
   
   .suggestions-title {
-    font-size: 0.85em;
+    font-size: 0.8em;
     color: var(--terminal-accent, #58a6ff);
-    font-weight: 600;
+    font-weight: 500;
   }
   
   .suggestions-hint {
-    font-size: 0.75em;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7em;
+    color: rgba(255, 255, 255, 0.4);
   }
 }
 
 .suggestions-list {
-  max-height: 200px;
+  max-height: 120px;
   overflow-y: auto;
   
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 3px;
   }
   
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: transparent;
   }
   
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 2px;
   }
 }
 
 .suggestion-item {
-  padding: 8px 12px;
+  padding: 4px 12px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   
   &:last-child {
     border-bottom: none;
@@ -153,49 +152,51 @@
   
   &:hover,
   &.selected {
-    background: rgba(88, 166, 255, 0.1);
+    background: rgba(88, 166, 255, 0.08);
     color: var(--terminal-accent, #58a6ff);
   }
   
   .suggestion-text {
     font-family: inherit;
-    font-weight: 500;
+    font-weight: 400;
+    font-size: 0.85em;
   }
   
   .selection-indicator {
     color: var(--terminal-accent, #58a6ff);
     font-weight: bold;
     margin-left: 8px;
+    font-size: 0.8em;
   }
 }
 
 .suggestions-footer {
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 3px 12px;
+  background: rgba(255, 255, 255, 0.01);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
   
   .suggestions-count {
-    font-size: 0.75em;
-    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.7em;
+    color: rgba(255, 255, 255, 0.3);
   }
 }
 
 // Keyboard Shortcuts Help
 .keyboard-shortcuts {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 8px;
+  position: static;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
   animation: shortcuts-appear 0.3s ease-out;
 }
 
 .shortcuts-container {
   display: flex;
-  gap: 12px;
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.8);
+  gap: 8px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  border-radius: 4px;
   backdrop-filter: blur(8px);
   
   .shortcut {

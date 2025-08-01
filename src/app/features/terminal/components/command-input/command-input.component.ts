@@ -13,7 +13,11 @@ import { CommandService } from '../../../../core/services/command.service';
 export class CommandInputComponent implements OnInit, OnDestroy {
   @Input() prompt = '$ ';
   @Input() disabled = false;
+  @Input() hideInlineTooltips = false;
   @Output() commandSubmitted = new EventEmitter<string>();
+  @Output() inputFocused = new EventEmitter<string>();
+  @Output() inputBlurred = new EventEmitter<void>();
+  @Output() suggestionsChanged = new EventEmitter<string[]>();
 
   @ViewChild('inputElement', { static: true }) inputElement!: ElementRef<HTMLInputElement>;
 
@@ -72,6 +76,7 @@ export class CommandInputComponent implements OnInit, OnDestroy {
   onFocus(): void {
     this.isFocused = true;
     this.updateSuggestions();
+    this.inputFocused.emit(this.currentCommand);
   }
 
   /**
@@ -79,6 +84,7 @@ export class CommandInputComponent implements OnInit, OnDestroy {
    */
   onBlur(): void {
     this.isFocused = false;
+    this.inputBlurred.emit();
     // Delay hiding suggestions to allow clicking on them
     setTimeout(() => {
       if (!this.isFocused) {
@@ -233,12 +239,17 @@ export class CommandInputComponent implements OnInit, OnDestroy {
   private updateSuggestions(): void {
     if (!this.currentCommand.trim()) {
       this.hideSuggestions();
+      this.suggestionsChanged.emit([]);
       return;
     }
 
     this.suggestions = this.commandService.getCommandSuggestions(this.currentCommand);
-    this.showSuggestions = this.suggestions.length > 0 && this.isFocused;
+    // Always hide inline suggestions since we're using the status bar
+    this.showSuggestions = false;
     this.selectedSuggestionIndex = -1;
+    
+    // Emit suggestions for status bar
+    this.suggestionsChanged.emit(this.suggestions);
   }
 
   /**

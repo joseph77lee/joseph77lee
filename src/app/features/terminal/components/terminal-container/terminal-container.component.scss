@@ -249,10 +249,68 @@
 // Command Input Container
 .command-input-container {
   margin-top: 16px;
+  position: relative;
+  z-index: 10;
   
   &.disabled {
     opacity: 0.6;
     pointer-events: none;
+  }
+}
+
+// Terminal Status Bar
+.terminal-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.75em;
+  color: rgba(255, 255, 255, 0.7);
+  min-height: 32px;
+  
+  .status-left {
+    flex: 1;
+    
+    .status-info {
+      color: var(--terminal-accent, #58a6ff);
+    }
+  }
+  
+  .status-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .status-shortcuts {
+      display: flex;
+      gap: 12px;
+      
+      .shortcut-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: rgba(255, 255, 255, 0.6);
+        
+        kbd {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 3px;
+          padding: 2px 4px;
+          font-size: 0.9em;
+          font-family: inherit;
+          color: var(--terminal-text, #c9d1d9);
+          min-width: 16px;
+          text-align: center;
+        }
+      }
+    }
+    
+    .status-theme {
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+    }
   }
 }
 

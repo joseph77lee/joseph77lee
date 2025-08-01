@@ -23,7 +23,7 @@ import { ThemeConfig } from '../../../../core/models/session.models';
 })
 export class TerminalContainerComponent implements OnInit, OnDestroy {
   @ViewChild('terminalBody', { static: true }) terminalBody!: ElementRef<HTMLDivElement>;
-  @ViewChild('commandInput', { static: false }) commandInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('commandInput', { static: false }) commandInputComponent: any;
 
   // Terminal state
   commandHistory: CommandHistoryItem[] = [];
@@ -39,6 +39,14 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
   // Theme and session state
   currentTheme: ThemeConfig | null = null;
   sessionId: string | null = null;
+
+  // Status bar state
+  currentSuggestions: string[] = [];
+  isInputFocused = false;
+
+  get currentThemeName(): string {
+    return this.currentTheme?.name || 'dark';
+  }
 
   private destroy$ = new Subject<void>();
   private commandIdCounter = 0;
@@ -175,8 +183,6 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
       });
     }
 
-    // Scroll to bottom after command execution
-    setTimeout(() => this.scrollToBottom(), 100);
   }
 
   /**
@@ -210,6 +216,12 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
     this.commandHistory = [];
     this.addWelcomeMessage();
     this.announceToScreenReader('Terminal cleared');
+    
+    // Scroll to bottom and refocus input after clearing
+    setTimeout(() => {
+      this.scrollToBottom();
+      this.focusCommandInput();
+    }, 100);
   }
 
   /**
@@ -272,6 +284,13 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
     // Announce output to screen reader
     const contentText = this.extractTextFromOutput(output.data.output);
     this.announceToScreenReader(contentText);
+
+    // Scroll to bottom and refocus input after content is rendered
+    // Use longer timeout to account for DOM updates and typewriter animation
+    setTimeout(() => {
+      this.scrollToBottom();
+      this.focusCommandInput();
+    }, 300);
   }
 
   /**
@@ -292,6 +311,12 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
 
     this.commandHistory.push(errorItem);
     this.announceToScreenReader(`Error: ${error.error.message}`);
+
+    // Scroll to bottom and refocus input after error is rendered
+    setTimeout(() => {
+      this.scrollToBottom();
+      this.focusCommandInput();
+    }, 100);
   }
 
   /**
@@ -401,8 +426,28 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
     }
 
     // Focus the command input
-    if (this.commandInput?.nativeElement) {
-      this.commandInput.nativeElement.focus();
+    this.focusCommandInput();
+  }
+
+  /**
+   * Focus the command input element
+   */
+  private focusCommandInput(): void {
+    if (!this.isProcessing) {
+      // Try to focus using the component reference first
+      if (this.commandInputComponent && this.commandInputComponent.focusInput) {
+        setTimeout(() => {
+          this.commandInputComponent.focusInput();
+        }, 50);
+      } else {
+        // Fallback: find the input element directly
+        const inputElement = this.terminalBody?.nativeElement?.querySelector('app-command-input input') as HTMLInputElement;
+        if (inputElement) {
+          setTimeout(() => {
+            inputElement.focus();
+          }, 50);
+        }
+      }
     }
   }
 
@@ -422,6 +467,28 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
       // In a real implementation, this would cancel the current request
       this.addSystemMessage('^C', 'warning');
     }
+  }
+
+  /**
+   * Handle input focus events for status bar
+   */
+  onInputFocused(value: string): void {
+    this.isInputFocused = true;
+  }
+
+  /**
+   * Handle input blur events for status bar
+   */
+  onInputBlurred(): void {
+    this.isInputFocused = false;
+    this.currentSuggestions = [];
+  }
+
+  /**
+   * Handle suggestions changes for status bar
+   */
+  onSuggestionsChanged(suggestions: string[]): void {
+    this.currentSuggestions = suggestions;
   }
 
   /**
