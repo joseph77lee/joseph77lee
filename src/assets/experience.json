@@ -3,66 +3,42 @@
     "company": "Government of Canada (G7 Summit, SMO)",
     "location": "Calgary, AB",
     "title": "Accreditation IT Support Specialist",
-    "period": "April 2025 \u2013 Present",
-    "responsibilities": [
-      "Provide IT support for badge printing software and hardware.",
-      "Manage and troubleshoot ODBC data connections.",
-      "Collaborate with teams to optimize workflows."
-    ]
+    "period": "April 2025 – Present",
+    "summary": "This role felt like working in a mission-critical war room — minus the explosions. As part of the accreditation team for the G7 Summit, I was the go-to person whenever a printer stopped printing, a laptop refused to behave, or an ODBC connection gave up. And yes, people called out “Joseph!” a lot.\n\nUnder heavy pressure and tight deadlines, I managed badge printing systems (AlphaCard, Entrust, Zebra), maintained smooth data connections, and kept everything running — all with a smile. It was intense, but deeply rewarding. I learned how to thrive in high-stakes environments and still be the calm in the storm."
   },
   {
     "company": "Camp Reservations Canada (Campspot)",
     "location": "Remote",
     "title": "Full Stack Developer",
-    "period": "Nov 2023 \u2013 April 2025",
-    "responsibilities": [
-      "Developed and maintained campground utility billing system.",
-      "Redesigned campsite management features.",
-      "Built responsive interfaces and optimized backend services."
-    ]
+    "period": "Nov 2023 – April 2025",
+    "summary": "Working in a small, tight-knit remote team, I handled bug fixes, feature development, and utility billing improvements for a campground reservation system. Thanks to my familiarity with Angular, Spring Boot, and JHipster, I ramped up quickly and became productive from day one.\n\nWe communicated constantly, solved problems fast, and shipped often. Although the company was acquired by Campspot during my time there, I stepped away to pursue the G7 opportunity — but I truly enjoyed the rhythm of daily collaboration and building something useful for real users."
   },
   {
-    "company": "Master\u2019s Academy & College",
+    "company": "Master’s Academy & College",
     "location": "Remote (Contract)",
     "title": "Full Stack Developer",
-    "period": "Sep 2023 \u2013 Apr 2024",
-    "responsibilities": [
-      "Built student notes module for the SMS.",
-      "Improved reliability using Java and Spring MVC.",
-      "Maintained Apache Tomcat services."
-    ]
+    "period": "Sep 2023 – Apr 2024",
+    "summary": "This was a short-term contract that came through a personal connection. The codebase? Over 10 years old and built with Spring MVC — let’s just say it had character.\n\nDespite the learning curve, I dove in and delivered a full “Student Notes” module that helped teachers track and manage academic comments. It gave me a taste of legacy system challenges, and a reminder that not all tech is shiny — but all of it matters."
   },
   {
     "company": "Paysafe Group",
     "location": "Calgary, AB",
     "title": "Full Stack Developer",
-    "period": "2013 \u2013 2022",
-    "responsibilities": [
-      "Developed front-end for risk control systems.",
-      "Built full-stack apps with Angular and Spring Boot.",
-      "Resolved performance bottlenecks."
-    ]
+    "period": "2013 – 2022",
+    "summary": "This was my longest and most formative role. I started with Groovy and Grails, working alongside TIBCO BusinessWorks to move data around financial systems — and then, as the company evolved, so did I.\n\nI transitioned into Angular and Spring Boot microservices (back when Angular 2 was still fresh), and helped build risk management tools that improved fraud detection and case handling.\n\nThe team? Amazing. The vibe? Productive and supportive.\nIf the Calgary office hadn’t closed, I might still be there today."
   },
   {
     "company": "Userful Corporation",
     "location": "Calgary, AB",
     "title": "Software Developer",
-    "period": "2012 \u2013 2013",
-    "responsibilities": [
-      "Resolved critical bugs and improved features.",
-      "Built cross-platform solutions with Tcl, Java, Python, GWT, PHP.",
-      "Integrated PostgreSQL and OpenACS APIs."
-    ]
+    "period": "2012 – 2013",
+    "summary": "My first Canadian tech job after graduating from SAIT — and it felt like a fast-paced startup adventure.\n\nUserful was building a visualization platform that let multiple users interact with various OS environments and control massive video walls like one giant monitor. I worked on legacy PHP code, enhanced GWT-based tools, and contributed to a controller app that managed the wall system.\n\nIt was fascinating tech and a great first step into the Canadian tech industry — though when Paysafe called, I answered."
   },
   {
     "company": "OKCashbag System (via SK C&C)",
     "location": "Seoul, South Korea",
     "title": "System Application Developer",
-    "period": "2003 \u2013 2006",
-    "responsibilities": [
-      "Developed daemon processes with C and sockets.",
-      "Maintained backend server processes on Unix.",
-      "Built internal service interfaces using Visual Basic."
-    ]
+    "period": "2003 – 2006",
+    "summary": "Back in Korea, this was my first job out of university — deep in the world of C and Unix networking. I wrote daemon processes to handle transaction parsing, built backend systems that communicated with vendors, and kept servers stable using shell scripts and Crontab.\n\nIt was low-level, high-responsibility work, and I learned a lot about performance, networking, and how systems really talk to each other. I even dipped my toes into kernel studies back then — though I’ll admit, the details are fuzzy now."
   }
 ]

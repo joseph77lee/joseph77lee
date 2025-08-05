@@ -11,6 +11,7 @@ import {
   AVAILABLE_COMMANDS,
   PortfolioCommand 
 } from '../models/command.models';
+import { SessionService } from './session.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,10 @@ export class CommandService {
     return AVAILABLE_COMMANDS;
   }
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService
+  ) {}
 
   /**
    * Execute a portfolio command
@@ -243,11 +247,25 @@ export class CommandService {
 ${data.summary}
 
 Location: ${data.location}
-Website: ${data.website}
+Website: ${data.website}${data.email ? `\nEmail: ${data.email}` : ''}
 
 Type 'skills', 'experience', 'education', or 'highlights' for more details.`,
             type: 'text',
             formatting: { color: 'green' }
+          }))
+        );
+
+      case 'aboutme':
+        return this.http.get('/assets/aboutme.json').pipe(
+          map((data: any) => ({
+            content: `About ${data.name}
+
+${data.about}
+
+Location: ${data.location}
+Website: ${data.website}${data.email ? `\nEmail: ${data.email}` : ''}`,
+            type: 'text',
+            formatting: { color: 'cyan' }
           }))
         );
 
@@ -283,9 +301,9 @@ Type 'skills', 'experience', 'education', or 'highlights' for more details.`,
           map((data) => {
             const experienceText = data
               .map(exp => 
-                `${exp.title} | ${exp.company}\n${exp.location} | ${exp.period}\n${exp.responsibilities.map((r: string) => `• ${r}`).join('\n')}`
+                `${exp.title} | ${exp.company}\n${exp.location} | ${exp.period}\n\n${exp.summary}`
               )
-              .join('\n\n');
+              .join('\n\n' + '─'.repeat(60) + '\n\n');
             
             return {
               content: `Work Experience:\n\n${experienceText}`,
@@ -319,12 +337,33 @@ Type 'skills', 'experience', 'education', or 'highlights' for more details.`,
           }))
         );
 
+      case 'tryme':
+        return this.http.get('/assets/tryme.json').pipe(
+          map((data: any) => {
+            const contentText = data.content.join('\n\n');
+            
+            return {
+              content: `${data.title}
+
+${contentText}
+
+${data.contact.label}
+${data.contact.email}`,
+              type: 'text',
+              formatting: { color: 'green' }
+            };
+          })
+        );
+
       case 'download':
         return this.executeDownloadCommand();
 
+      case 'theme':
+        return this.executeThemeCommand(args);
+
       default:
         return of({
-          content: `Command '${command}' is recognized but not yet implemented.\n\nAvailable commands: help, summary, skills, experience, education, highlights, download`,
+          content: `Command '${command}' is recognized but not yet implemented.\n\nAvailable commands: help, summary, aboutme, skills, experience, education, highlights, tryme, download, theme`,
           type: 'text',
           formatting: { color: 'orange' }
         });
@@ -356,6 +395,53 @@ Type 'skills', 'experience', 'education', or 'highlights' for more details.`,
     return helpText;
   }
 
+
+  /**
+   * Execute theme command to change terminal theme
+   */
+  private executeThemeCommand(args: string[]): Observable<any> {
+    if (args.length === 0) {
+      // Show available themes
+      const themes = this.sessionService.availableThemes;
+      const themeList = themes.map(t => `• ${t.name} - ${t.displayName}`).join('\n');
+      
+      return of({
+        content: `Available themes:\n\n${themeList}\n\nUsage: theme <name>`,
+        type: 'text',
+        formatting: { color: 'blue' }
+      });
+    }
+
+    const themeName = args[0].toLowerCase();
+    
+    // Validate theme name
+    if (themeName !== 'dark' && themeName !== 'light') {
+      return of({
+        content: `❌ Invalid theme: '${themeName}'\n\nAvailable themes: dark, light\n\nUsage: theme <name>`,
+        type: 'text',
+        formatting: { color: 'red' }
+      });
+    }
+
+    // Change the theme
+    return this.sessionService.changeTheme(themeName as any).pipe(
+      map((theme) => ({
+        content: `✅ Theme changed to: ${theme}\n\nThe ${theme} theme has been applied to the terminal.`,
+        type: 'text',
+        formatting: { 
+          color: 'green',
+          animation: { typewriter: true, speed: 30 }
+        }
+      })),
+      catchError((error) => {
+        return of({
+          content: `❌ Failed to change theme: ${error.message || 'Unknown error'}\n\nAvailable themes: dark, light`,
+          type: 'text',
+          formatting: { color: 'red' }
+        });
+      })
+    );
+  }
 
   /**
    * Execute download command to download resume PDF
@@ -495,21 +581,27 @@ startxref
   private getNextSuggestions(command: string): string[] {
     switch (command) {
       case 'help':
-        return ['summary', 'skills', 'experience', 'download'];
+        return ['summary', 'aboutme', 'skills', 'experience'];
       case 'summary':
-        return ['skills', 'experience', 'highlights', 'download'];
+        return ['aboutme', 'skills', 'experience', 'tryme'];
+      case 'aboutme':
+        return ['summary', 'skills', 'experience', 'tryme'];
       case 'skills':
-        return ['experience', 'education', 'highlights', 'download'];
+        return ['experience', 'education', 'highlights', 'tryme'];
       case 'experience':
-        return ['education', 'skills', 'highlights', 'download'];
+        return ['education', 'skills', 'highlights', 'tryme'];
       case 'education':
-        return ['skills', 'experience', 'highlights', 'download'];
+        return ['skills', 'experience', 'highlights', 'tryme'];
       case 'highlights':
-        return ['summary', 'skills', 'experience', 'download'];
+        return ['summary', 'aboutme', 'tryme', 'download'];
+      case 'tryme':
+        return ['download', 'summary', 'skills', 'experience'];
       case 'download':
-        return ['summary', 'skills', 'experience'];
+        return ['summary', 'aboutme', 'skills', 'theme'];
+      case 'theme':
+        return ['help', 'summary', 'aboutme', 'skills'];
       default:
-        return ['help', 'summary', 'skills'];
+        return ['help', 'summary', 'aboutme', 'skills'];
     }
   }
 
@@ -525,6 +617,12 @@ startxref
         name: 'summary',
         description: 'Overview of Joseph Lee\'s profile and career',
         usage: 'summary',
+        category: 'profile'
+      },
+      {
+        name: 'aboutme',
+        description: 'Personal story and background information',
+        usage: 'aboutme',
         category: 'profile'
       },
       {
@@ -555,6 +653,12 @@ startxref
         category: 'profile'
       },
       {
+        name: 'tryme',
+        description: 'Why you should work with Joseph',
+        usage: 'tryme',
+        category: 'action'
+      },
+      {
         name: 'download',
         description: 'Download resume as PDF',
         usage: 'download',
@@ -568,12 +672,13 @@ startxref
       },
       {
         name: 'theme',
-        description: 'Change terminal theme',
+        description: 'Change terminal theme or show available themes',
         usage: 'theme [name]',
         category: 'action',
         args: [
-          { name: 'name', description: 'Theme name', required: false, type: 'string', options: ['dark', 'light', 'matrix', 'retro'] }
-        ]
+          { name: 'name', description: 'Theme name (dark or light)', required: false, type: 'string', options: ['dark', 'light'] }
+        ],
+        examples: ['theme', 'theme dark', 'theme light']
       }
     ];
   }

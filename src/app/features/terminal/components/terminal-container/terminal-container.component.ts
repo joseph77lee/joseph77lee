@@ -189,19 +189,11 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
    * Handle built-in terminal commands
    */
   private handleBuiltInCommand(command: string): boolean {
-    const [cmd, ...args] = command.toLowerCase().split(' ');
+    const [cmd] = command.toLowerCase().split(' ');
 
     switch (cmd) {
       case 'clear':
         this.clearTerminal();
-        return true;
-      
-      case 'theme':
-        if (args.length > 0) {
-          this.changeTheme(args[0] as any);
-        } else {
-          this.showAvailableThemes();
-        }
         return true;
       
       default:
@@ -224,32 +216,6 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
-  /**
-   * Change terminal theme
-   */
-  private changeTheme(themeName: string): void {
-    this.sessionService.changeTheme(themeName as any)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (theme) => {
-          this.addSystemMessage(`Theme changed to: ${theme}`, 'success');
-          this.announceToScreenReader(`Theme changed to ${theme}`);
-        },
-        error: (error) => {
-          this.addSystemMessage(`Invalid theme: ${themeName}. Available themes: dark, light, matrix, retro`, 'error');
-        }
-      });
-  }
-
-  /**
-   * Show available themes
-   */
-  private showAvailableThemes(): void {
-    const themes = this.sessionService.availableThemes;
-    const themeList = themes.map(t => `${t.name} - ${t.displayName}`).join('\n');
-    
-    this.addSystemMessage(`Available themes:\n${themeList}\n\nUsage: theme <name>`, 'info');
-  }
 
   /**
    * Add command echo to history
@@ -411,14 +377,14 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
   /**
    * Track function for command history ngFor
    */
-  trackByCommandId(index: number, item: CommandHistoryItem): string {
+  trackByCommandId(_index: number, item: CommandHistoryItem): string {
     return item.id;
   }
 
   /**
    * Handle terminal click to focus input
    */
-  onTerminalClick(event: Event): void {
+  onTerminalClick(_event: Event): void {
     // Don't focus if user is selecting text
     const selection = window.getSelection();
     if (selection && selection.toString().length > 0) {
@@ -472,7 +438,7 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
   /**
    * Handle input focus events for status bar
    */
-  onInputFocused(value: string): void {
+  onInputFocused(_value: string): void {
     this.isInputFocused = true;
   }
 

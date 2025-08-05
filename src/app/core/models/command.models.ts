@@ -110,10 +110,12 @@ export enum CommandExecutionState {
 export const AVAILABLE_COMMANDS = [
   'help',
   'summary', 
+  'aboutme',
   'skills',
   'experience',
   'education',
   'highlights',
+  'tryme',
   'download',
   'clear',
   'theme'

@@ -227,9 +227,10 @@ export class SessionService {
     const themeConfig = AVAILABLE_THEMES[theme];
     const root = document.documentElement;
 
-    // Apply CSS custom properties
+    // Apply CSS custom properties - map 'background' to 'bg' for consistency
     Object.entries(themeConfig.colors).forEach(([key, value]) => {
-      root.style.setProperty(`--terminal-${key}`, value);
+      const cssKey = key === 'background' ? 'bg' : key;
+      root.style.setProperty(`--terminal-${cssKey}`, value);
     });
 
     root.style.setProperty('--terminal-font-primary', themeConfig.fonts.primary);

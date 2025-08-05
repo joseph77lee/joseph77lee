@@ -163,7 +163,23 @@ input, textarea, select {
 }
 
 .theme-light {
-  // Light theme overrides if needed
+  // Light theme overrides
+  font-weight: 500; // Make text bolder for better readability
+  
+  // Keep body background dark for light theme
+  background: #0d1117 !important;
+  
+  .terminal-body,
+  .command-output,
+  .command-text,
+  .status-info {
+    font-weight: 500;
+  }
+  
+  .prompt,
+  .command-text {
+    font-weight: 600;
+  }
 }
 
 .theme-matrix {

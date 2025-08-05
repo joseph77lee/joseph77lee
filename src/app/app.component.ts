@@ -53,9 +53,10 @@ export class AppComponent implements OnInit, OnDestroy {
   private applyGlobalTheme(themeConfig: ThemeConfig): void {
     const root = document.documentElement;
     
-    // Apply CSS custom properties globally
+    // Apply CSS custom properties globally - map 'background' to 'bg' for consistency
     Object.entries(themeConfig.colors).forEach(([key, value]) => {
-      root.style.setProperty(`--terminal-${key}`, value);
+      const cssKey = key === 'background' ? 'bg' : key;
+      root.style.setProperty(`--terminal-${cssKey}`, value);
     });
 
     root.style.setProperty('--terminal-font-primary', themeConfig.fonts.primary);

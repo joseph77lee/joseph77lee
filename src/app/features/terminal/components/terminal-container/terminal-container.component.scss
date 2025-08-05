@@ -30,6 +30,14 @@
   position: relative;
   margin: 20px;
   
+  // Light theme styling
+  .theme-light & {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                0 4px 16px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
   // Animation on load
   animation: terminal-boot 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   
@@ -71,6 +79,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   min-height: 48px;
+  
 }
 
 .terminal-controls {
@@ -138,6 +147,8 @@
   overflow-x: hidden;
   line-height: 1.4;
   position: relative;
+  background: var(--terminal-bg, #0d1117);
+  color: var(--terminal-text, #c9d1d9);
   
   // Custom scrollbar
   &::-webkit-scrollbar {
@@ -161,6 +172,24 @@
   // Firefox scrollbar
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+  
+  // Light theme scrollbar
+  .theme-light & {
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.3);
+      }
+    }
+    
+    // Firefox scrollbar for light theme
+    scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
+  }
 }
 
 // Command History
@@ -269,6 +298,13 @@
   font-size: 0.75em;
   color: rgba(255, 255, 255, 0.7);
   min-height: 32px;
+  
+  // Light theme status bar
+  .theme-light & {
+    background: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.6);
+  }
   
   .status-left {
     flex: 1;

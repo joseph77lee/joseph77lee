@@ -43,7 +43,7 @@ export interface SessionUpdateRequest {
   theme?: ThemeType;
 }
 
-export type ThemeType = 'dark' | 'light' | 'matrix' | 'retro';
+export type ThemeType = 'dark';
 
 export interface ThemeConfig {
   name: ThemeType;
@@ -89,54 +89,6 @@ export const AVAILABLE_THEMES: Record<ThemeType, ThemeConfig> = {
     },
     fonts: {
       primary: "'Monaco', 'Menlo', 'Ubuntu Mono', monospace"
-    }
-  },
-  light: {
-    name: 'light',
-    displayName: 'Light Terminal',
-    colors: {
-      background: '#f6f8fa',
-      text: '#24292f',
-      accent: '#0969da',
-      success: '#1a7f37',
-      error: '#cf222e',
-      warning: '#9a6700',
-      prompt: '#0550ae'
-    },
-    fonts: {
-      primary: "'Monaco', 'Menlo', 'Ubuntu Mono', monospace"
-    }
-  },
-  matrix: {
-    name: 'matrix',
-    displayName: 'Matrix Green',
-    colors: {
-      background: '#000000',
-      text: '#00ff00',
-      accent: '#00aa00',
-      success: '#00ff00',
-      error: '#ff0000',
-      warning: '#ffff00',
-      prompt: '#00cc00'
-    },
-    fonts: {
-      primary: "'Courier New', monospace"
-    }
-  },
-  retro: {
-    name: 'retro',
-    displayName: 'Retro Amber',
-    colors: {
-      background: '#1e1e1e',
-      text: '#ffb000',
-      accent: '#ff8c00',
-      success: '#90ee90',
-      error: '#ff6b6b',
-      warning: '#ffd700',
-      prompt: '#ff8c00'
-    },
-    fonts: {
-      primary: "'Courier New', monospace"
     }
   }
 };

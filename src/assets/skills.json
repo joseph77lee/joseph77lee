@@ -8,26 +8,37 @@
     "TypeScript"
   ],
   "backend": [
-    "Java (Spring Boot, Spring MVC)",
-    "Node.js"
+    "Java (Spring Boot, Spring MVC, Microservices)",
+    "Node.js",
+    "Firebase"
   ],
   "devTools": [
     "Git",
     "Azure DevOps",
     "JHipster",
-    "Apache Tomcat"
+    "Apache Tomcat",
+    "Jenkins",
+    "Heroku"
   ],
   "dataAPIs": [
     "REST APIs",
     "SQL",
     "ODBC",
     "MySQL",
-    "PostgreSQL"
+    "Oracle"
+  ],
+  "cmsAndSeo": [
+    "WordPress",
+    "AdSense optimization",
+    "Google Search Console",
+    "Traffic analytics",
+    "Content marketing"
   ],
   "other": [
     "Responsive Web Design",
     "Unit Testing",
     "OOP",
-    "SOLID Principles"
+    "SOLID Principles",
+    "Video/Image Editing for Web Content"
   ]
 }
