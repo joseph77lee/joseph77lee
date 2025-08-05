@@ -448,30 +448,18 @@ ${data.contact.email}`,
    */
   private executeDownloadCommand(): Observable<any> {
     try {
-      // Generate PDF content for Joseph Lee's resume
-      const resumeContent = this.generateResumeContent();
-      
-      // Create blob and download
-      const blob = new Blob([resumeContent], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      
-      // Create download link and trigger download
+      // Create download link for the PDF from assets
       const link = document.createElement('a');
-      link.href = url;
-      link.download = 'Joseph_Lee_Resume.pdf';
+      link.href = 'assets/Joseph_Lee_Resume_B.pdf';
+      link.download = 'Joseph_Lee_Resume_B.pdf';
       link.style.display = 'none';
       
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      // Clean up blob URL after a delay
-      setTimeout(() => {
-        URL.revokeObjectURL(url);
-      }, 1000);
-      
       return of({
-        content: '📄 Resume downloaded successfully!\n\nFile: Joseph_Lee_Resume.pdf\nLocation: Downloads folder\n\nThe resume contains my complete professional background, skills, and experience.',
+        content: '📄 Resume downloaded successfully!\n\nFile: Joseph_Lee_Resume_B.pdf\nLocation: Downloads folder\n\nThe resume contains my complete professional background, skills, and experience.',
         type: 'interactive',
         formatting: { 
           color: 'green',
@@ -494,86 +482,6 @@ ${data.contact.email}`,
     }
   }
 
-  /**
-   * Generate resume content (placeholder - in real app would be actual PDF)
-   */
-  private generateResumeContent(): string {
-    return `%PDF-1.4
-1 0 obj
-<<
-/Type /Catalog
-/Pages 2 0 R
->>
-endobj
-
-2 0 obj
-<<
-/Type /Pages
-/Kids [3 0 R]
-/Count 1
->>
-endobj
-
-3 0 obj
-<<
-/Type /Page
-/Parent 2 0 R
-/MediaBox [0 0 612 792]
-/Contents 4 0 R
-/Resources <<
-/Font <<
-/F1 5 0 R
->>
->>
->>
-endobj
-
-4 0 obj
-<<
-/Length 200
->>
-stream
-BT
-/F1 12 Tf
-50 750 Td
-(JOSEPH LEE) Tj
-0 -20 Td
-(Full Stack Developer) Tj
-0 -30 Td
-(Professional resume with complete background) Tj
-0 -20 Td
-(Skills, experience, and portfolio projects) Tj
-0 -30 Td
-(Generated from Interactive Terminal Portfolio) Tj
-ET
-endstream
-endobj
-
-5 0 obj
-<<
-/Type /Font
-/Subtype /Type1
-/BaseFont /Helvetica
->>
-endobj
-
-xref
-0 6
-0000000000 65535 f 
-0000000010 00000 n 
-0000000053 00000 n 
-0000000125 00000 n 
-0000000348 00000 n 
-0000000565 00000 n 
-trailer
-<<
-/Size 6
-/Root 1 0 R
->>
-startxref
-625
-%%EOF`;
-  }
 
   /**
    * Get next command suggestions based on the current command
