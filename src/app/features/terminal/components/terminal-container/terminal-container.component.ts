@@ -64,6 +64,14 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
     this.initializeTerminal();
     this.subscribeToServices();
     this.addWelcomeMessage();
+    
+    // Ensure proper layout on mobile after initial render
+    setTimeout(() => {
+      if (this.isMobile && this.terminalBody) {
+        this.terminalBody.nativeElement.scrollTop = this.terminalBody.nativeElement.scrollHeight;
+        this.cdr.detectChanges();
+      }
+    }, 100);
   }
 
   ngOnDestroy(): void {
@@ -79,7 +87,7 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
       Breakpoints.Handset,
       Breakpoints.Tablet
     ]).pipe(takeUntil(this.destroy$))
-      .subscribe(result => {
+      .subscribe(() => {
         this.isMobile = this.breakpointObserver.isMatched(Breakpoints.Handset);
         this.isTablet = this.breakpointObserver.isMatched(Breakpoints.Tablet) && !this.isMobile;
         this.cdr.detectChanges();

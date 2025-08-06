@@ -30,6 +30,18 @@
   position: relative;
   margin: 20px;
   
+  // Ensure all children are properly laid out
+  > * {
+    flex-shrink: 0;
+  }
+  
+  // Terminal body should be the only flexible element
+  .terminal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  
   // Light theme styling
   .theme-light & {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
@@ -141,9 +153,7 @@
 
 // Terminal Body
 .terminal-body {
-  flex: 1;
   padding: 20px;
-  overflow-y: auto;
   overflow-x: hidden;
   line-height: 1.4;
   position: relative;
@@ -298,6 +308,8 @@
   font-size: 0.75em;
   color: rgba(255, 255, 255, 0.7);
   min-height: 32px;
+  flex-shrink: 0; // Prevent shrinking
+  z-index: 10; // Ensure it's above other content
   
   // Light theme status bar
   .theme-light & {
@@ -390,7 +402,7 @@
     .terminal-body {
       padding: 12px;
       font-size: 14px;
-      flex: 1;
+      flex: 1 1 auto;
       min-height: 0; // Important for flex children to allow shrinking
       overflow-y: auto;
     }
