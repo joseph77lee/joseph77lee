@@ -389,15 +389,28 @@
 @include mobile {
   .terminal-container {
     padding: 0;
+    height: 100vh;
+    height: 100dvh; // Dynamic viewport height
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
   
   .terminal-window {
     margin: 0;
     border-radius: 0;
     height: 100vh;
+    height: 100dvh; // Use dynamic viewport height for mobile browsers
     max-width: none;
     display: flex;
     flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     
     .terminal-body {
       padding: 12px;
@@ -409,6 +422,7 @@
     
     .terminal-footer {
       display: block;
+      flex-shrink: 0;
     }
     
     .terminal-header {

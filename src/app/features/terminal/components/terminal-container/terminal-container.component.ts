@@ -345,6 +345,16 @@ export class TerminalContainerComponent implements OnInit, OnDestroy {
     if (this.terminalBody?.nativeElement) {
       const element = this.terminalBody.nativeElement;
       element.scrollTop = element.scrollHeight;
+      
+      // On mobile, ensure the command input is visible
+      if (this.isMobile) {
+        setTimeout(() => {
+          const commandInput = element.querySelector('.command-input-container');
+          if (commandInput) {
+            commandInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          }
+        }, 50);
+      }
     }
   }
 
