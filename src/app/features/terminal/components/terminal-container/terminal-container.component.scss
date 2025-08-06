@@ -384,10 +384,15 @@
     border-radius: 0;
     height: 100vh;
     max-width: none;
+    display: flex;
+    flex-direction: column;
     
     .terminal-body {
       padding: 12px;
       font-size: 14px;
+      flex: 1;
+      min-height: 0; // Important for flex children to allow shrinking
+      overflow-y: auto;
     }
     
     .terminal-footer {
@@ -411,6 +416,8 @@
   .terminal-status-bar {
     padding: 4px 12px;
     font-size: 0.7em;
+    flex-shrink: 0; // Prevent status bar from shrinking
+    min-height: 28px; // Ensure minimum height
     
     .status-info {
       font-size: 0.9em;
